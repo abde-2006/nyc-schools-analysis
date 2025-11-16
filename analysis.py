@@ -35,6 +35,30 @@ def find_top_schools(n=10):
 
     return top_n
 
+def analyze_by_borough():
+    borough_group = df.groupby('borough')
+
+    avg_math = borough_group['average_math'].mean()
+    avg_reading = borough_group['average_reading'].mean()
+    avg_writing = borough_group['average_writing'].mean()
+    avg_sat = borough_group['total_sat'].mean()
+    count_schools = borough_group['school_name'].count()
+
+    result = pd.DataFrame({
+        'average_total_math': avg_math,
+        'average_total_reading': avg_reading,
+        'average_total_writing': avg_writing,
+        'average_total_sat': avg_sat,
+        'school_count': count_schools
+    })
+    result = result.sort_values('average_total_sat', ascending=False)
+
+    print("\nBorough Performance:")
+    print("="*len(result.to_string().split("\n")[0]))
+    print(result)
+    print("="*len(result.to_string().split("\n")[0]))
+
 if __name__ == "__main__":
     load_data()
     find_top_schools()
+    analyze_by_borough()
