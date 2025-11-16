@@ -111,19 +111,39 @@ def analyze_missing_data():
     return missing_df
 
 def best_school_per_borough():
-    print("\n")
-    print("="*90)
-    print("BEST SCHOOL PER BOROUGH:".center(90))
-    print("="*90)
+    print("\n" + "="*100)
+    print("TOP SCHOOL PER BOROUGH ANALYSIS".center(100))
+    print("="*100)
 
     idx = df.groupby('borough')['total_sat'].idxmax()
-    print("\n", idx)
 
     columns = ['school_name', 'borough', 'average_math', 'average_reading', 'average_writing', 'total_sat']
     best_schools = df.loc[idx][columns].sort_values('total_sat', ascending=False)
-    print("\n", best_schools)
 
+    print("\n" + best_schools.to_string())
 
+    print("\n" + "-"*100)
+    print("KEY INSIGHTS".center(100))
+    print("-"*100)
+
+    top_school = best_schools.iloc[0]
+    bottom_school = best_schools.iloc[-1]
+    gap = top_school['total_sat'] - bottom_school['total_sat']
+
+    print(f"Overall Leader: {top_school['school_name']} ({top_school['borough']})")
+    print(f"   Total SAT: {top_school['total_sat']:.0f} points")
+    print(f"\nPerformance Gap: {gap:.0f} points between strongest and weakest borough leader")
+    print(f"   ({top_school['borough']}: {top_school['total_sat']:.0f} vs "
+          f"{bottom_school['borough']}: {bottom_school['total_sat']:.0f})")
+    
+    print(f"\nSubject Strength Pattern:")
+    for idx, row in best_schools.iterrows():
+        strongest_subject = 'Math' if row['average_math'] >= max(row['average_reading'], row['average_writing']) else 'Reading/Writing'
+        print(f"   {row['borough']:15s}: {strongest_subject} ({row['average_math']:.0f}M / {row['average_reading']:.0f}R / {row['average_writing']:.0f}W)")
+    
+    print("="*100)
+    
+    return best_schools
 
 if __name__ == "__main__":
     load_data()
