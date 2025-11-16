@@ -109,9 +109,25 @@ def analyze_missing_data():
     print("="*90)
     
     return missing_df
-    
+
+def best_school_per_borough():
+    print("\n")
+    print("="*90)
+    print("BEST SCHOOL PER BOROUGH:".center(90))
+    print("="*90)
+
+    idx = df.groupby('borough')['total_sat'].idxmax()
+    print("\n", idx)
+
+    columns = ['school_name', 'borough', 'average_math', 'average_reading', 'average_writing', 'total_sat']
+    best_schools = df.loc[idx][columns].sort_values('total_sat', ascending=False)
+    print("\n", best_schools)
+
+
+
 if __name__ == "__main__":
     load_data()
     find_top_schools()
     analyze_by_borough()
     analyze_missing_data()
+    best_school_per_borough()
