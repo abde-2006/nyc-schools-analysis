@@ -36,27 +36,28 @@ def find_top_schools(n=10):
     return top_n
 
 def analyze_by_borough():
-    borough_group = df.groupby('borough')
+    result = df.groupby('borough').agg({
+        'average_math': 'mean',
+        'average_reading': 'mean',
+        'average_writing': 'mean',
+        'total_sat': 'mean',
+        'school_name': 'count'
+    }).round(2)
 
-    avg_math = borough_group['average_math'].mean()
-    avg_reading = borough_group['average_reading'].mean()
-    avg_writing = borough_group['average_writing'].mean()
-    avg_sat = borough_group['total_sat'].mean()
-    count_schools = borough_group['school_name'].count()
+    result.columns = ['avg_math', 'avg_reading', 'avg_writing', 'avg_total_sat', 'num_schools']
 
-    result = pd.DataFrame({
-        'average_total_math': avg_math,
-        'average_total_reading': avg_reading,
-        'average_total_writing': avg_writing,
-        'average_total_sat': avg_sat,
-        'school_count': count_schools
-    })
-    result = result.sort_values('average_total_sat', ascending=False)
+    result = result.sort_values('avg_total_sat', ascending=False)
 
-    print("\nBorough Performance:")
-    print("="*len(result.to_string().split("\n")[0]))
-    print(result)
-    print("="*len(result.to_string().split("\n")[0]))
+    print("\n" + "="*90)
+    print("BOROUGH PERFORMANCE ANALYSIS".center(90))
+    print("="*90)
+    print(result.to_string())
+    print("="*90)
+    print(f"Key Insight: {result.index[0]} leads with {result.iloc[0]['avg_total_sat']:.0f} avg SAT")
+    print(f"Based on {result.iloc[0]['num_schools']:.0f} schools")
+    print("="*90)
+
+    return result
 
 if __name__ == "__main__":
     load_data()
