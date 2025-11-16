@@ -62,15 +62,53 @@ def analyze_by_borough():
 def analyze_missing_data():
     missing_df = df[df['percent_tested'].isnull()]
 
-    columns = ['school_name', 'borough', 'total_sat']
-    print(missing_df[columns])
+    print("\n" + "="*90)
+    print("MISSING DATA ANALYSIS".center(90))
+    print("="*90)
 
-    borough_counts = missing_df.groupby('borough').size()
-    print("\nCount of missing percent_tested by borough:")
-    print(borough_counts)
+    print(f"\n{len(missing_df)} schools are missing 'percent_tested' data:\n")
+    display_cols = ['school_name', 'borough', 'total_sat']
+    print(missing_df[display_cols].to_string(index=False))
+
+    print("\n" + "-"*90)
+    print("DISTRIBUTION BY BOROUGH".center(90))
+    print("-"*90)
+    borough_counts = missing_df.groupby('borough').size().sort_values(ascending=False)
+    for borough, count in borough_counts.items():
+        percentage = (count / len(missing_df)) * 100
+        print(f"{borough:15s}: {count:2d} schools ({percentage:5.1f}%)")
+
+    print("\n" + "-"*90)
+    print("SAT PERFORMANCE SUMMARY".center(90))
+    print("-"*90)
+    stats = missing_df['total_sat'].describe()
     
-    print("\nSAT score summary for schools with missing percent_tested:")
-    print(missing_df['total_sat'].describe().apply(lambda x: f"{x:.2f}"))
+    print(f"Count:      {stats['count']:6.0f} schools")
+    print(f"Mean:       {stats['mean']:6.2f}")
+    print(f"Std Dev:    {stats['std']:6.2f}")
+    print(f"Min:        {stats['min']:6.2f}")
+    print(f"25%:        {stats['25%']:6.2f}")
+    print(f"Median:     {stats['50%']:6.2f}")
+    print(f"75%:        {stats['75%']:6.2f}")
+    print(f"Max:        {stats['max']:6.2f}")
+    
+    print("\n" + "-"*90)
+    print("KEY INSIGHTS".center(90))
+    print("-"*90)
+    overall_mean = df['total_sat'].mean()
+    print(f"• Missing data affects {len(missing_df)}/{len(df)} schools ({len(missing_df)/len(df)*100:.1f}%)")
+    print(f"• Average SAT for schools with missing data: {stats['mean']:.0f}")
+    print(f"• Overall average SAT: {overall_mean:.0f}")
+    print(f"• Difference: {stats['mean'] - overall_mean:+.0f} points")
+    
+    if abs(stats['mean'] - overall_mean) < 50:
+        print("• Missing data appears RANDOM (no performance bias detected)")
+    else:
+        print("• Missing data may be SYSTEMATIC (performance-related pattern)")
+    
+    print("="*90)
+    
+    return missing_df
     
 if __name__ == "__main__":
     load_data()
