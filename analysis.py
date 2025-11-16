@@ -59,7 +59,21 @@ def analyze_by_borough():
 
     return result
 
+def analyze_missing_data():
+    missing_df = df[df['percent_tested'].isnull()]
+
+    columns = ['school_name', 'borough', 'total_sat']
+    print(missing_df[columns])
+
+    borough_counts = missing_df.groupby('borough').size()
+    print("\nCount of missing percent_tested by borough:")
+    print(borough_counts)
+    
+    print("\nSAT score summary for schools with missing percent_tested:")
+    print(missing_df['total_sat'].describe().apply(lambda x: f"{x:.2f}"))
+    
 if __name__ == "__main__":
     load_data()
     find_top_schools()
     analyze_by_borough()
+    analyze_missing_data()
