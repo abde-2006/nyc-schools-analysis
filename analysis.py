@@ -1,5 +1,7 @@
 import numpy as np
 import pandas as pd
+import matplotlib.pyplot as plt
+import seaborn as sb
 
 df = pd.read_csv('schools.csv')
 
@@ -145,9 +147,30 @@ def best_school_per_borough():
     
     return best_schools
 
+def visualize_top_schools():
+    # Get data
+    top_10 = find_top_schools(n=10)
+
+    fig, ax = plt.subplots(figsize=(12, 8))
+
+    x_values = top_10['total_sat'] 
+    y_values = top_10['school_name']
+    colors = plt.cm.Blues_r(np.linspace(0.4, 0.9, len(y_values)))
+    plt.barh(y_values, x_values, color=colors)
+
+    ax.set_title('Top 10 NYC Schools by SAT Score', fontsize=16, fontweight='bold', color='red')
+    ax.set_xlabel('Total SAT score')
+    ax.set_ylabel('School Name')
+
+    plt.tight_layout()
+    plt.savefig('top_schools.png')
+    plt.show()
+
+
 if __name__ == "__main__":
     load_data()
     find_top_schools()
     analyze_by_borough()
     analyze_missing_data()
     best_school_per_borough()
+    visualize_top_schools()
