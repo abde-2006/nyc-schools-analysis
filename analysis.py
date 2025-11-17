@@ -155,15 +155,31 @@ def visualize_top_schools():
 
     x_values = top_10['total_sat'] 
     y_values = top_10['school_name']
-    colors = plt.cm.Blues_r(np.linspace(0.4, 0.9, len(y_values)))
-    plt.barh(y_values, x_values, color=colors)
 
-    ax.set_title('Top 10 NYC Schools by SAT Score', fontsize=16, fontweight='bold', color='red')
-    ax.set_xlabel('Total SAT score')
-    ax.set_ylabel('School Name')
+    colors = plt.cm.RdYlGn(np.linspace(0.5, 0.9, len(y_values)))
+    
+    bars = ax.barh(y_values, x_values, color=colors, edgecolor='black', linewidth=0.7)
+
+    for i, (bar, score) in enumerate(zip(bars, x_values)):
+        ax.text(score - 50, i, f'{score:.0f}', 
+                va='center', ha='right', fontsize=10, 
+                fontweight='bold', color='white')
+
+    ax.set_title('Top 10 NYC Schools by SAT Score', fontsize=18, fontweight='bold', color='#2C3E50')
+    ax.set_xlabel('Total SAT score', fontsize=13, fontweight='bold', color='#34495E')
+    ax.set_ylabel('School Name', fontsize=13, fontweight='bold', color='#34495E')
+
+    ax.grid(axis='x', alpha=0.3, linestyle='--', linewidth=0.5)
+    ax.set_axisbelow(True)
+    ax.set_xlim(1800, max(x_values) + 100)
+    ax.tick_params(axis='both', labelsize=11)
+    ax.set_facecolor('#F8F9FA')
 
     plt.tight_layout()
-    plt.savefig('top_schools.png')
+    plt.savefig('top_schools_enhanced.png', dpi=300, bbox_inches='tight', 
+                facecolor='white', edgecolor='none')
+    
+    print("\nVisualization saved as 'top_schools_enhanced.png'")
     plt.show()
 
 
