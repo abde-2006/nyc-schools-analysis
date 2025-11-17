@@ -193,17 +193,59 @@ def visualize_borough_comparaison():
     x = np.arange(len(boroughs))
     width = .25
 
-    plt.figure(figsize=(10, 6))
+    plt.style.use('seaborn-v0_8-darkgrid')
+    fig, ax = plt.subplots(figsize=(14, 8))
 
-    plt.bar(x, math_scores, width)
-    plt.bar(x + width, reading_scores, width)
-    plt.bar(x + width*2, writing_scores, width)
+    bars1 = ax.bar(x - width, math_scores, width, 
+                   label='Math', color='#3498D8', edgecolor='black', linewidth=.7)
+    bars2 = ax.bar(x, reading_scores, width,
+                   label='Reading', color='#E74C3C', edgecolor='black', linewidth=.7)
+    bars3 = ax.bar(x + width, writing_scores, width,
+                   label='Writing', color='#2ECC71', edgecolor='black', linewidth=.7)
 
-    plt.xticks(x + width, boroughs)
+    def add_value_labels(bars):
+        for bar in bars:
+            height = bar.get_height()
+            ax.text(bar.get_x() + bar.get_width()/2., height, 
+                    f'{height:.0f}',
+                    ha='center', va='bottom', fontsize=9, fontweight='bold')
 
-    plt.legend(["Math", "Reading", "Writing"])
+    add_value_labels(bars1)
+    add_value_labels(bars2)
+    add_value_labels(bars3)
 
-    plt.savefig('borough_comparaison.png', dpi=300)
+    ax.set_xlabel('Borough', fontsize=14, fontweight='bold', color='#2C3E50')
+    ax.set_ylabel('Average SAT Score', fontsize=14, fontweight='bold', color='#2C3E50')
+    ax.set_title('NYC Borough Performance: Math vs Reading vs Writing\nAverage SAT Scores by Subject', 
+                 fontsize=17, fontweight='bold', pad=20, color='#2C3E50')
+    ax.set_xticks(x)
+    ax.set_xticklabels(boroughs, fontsize=12)
+    ax.tick_params(axis='y', labelsize=11)
+
+    ax.legend(loc='upper right', fontsize=12, framealpha=0.9, edgecolor='black')
+
+    ax.grid(axis='y', alpha=0.3, linestyle='--', linewidth=0.7)
+    ax.set_axisbelow(True)
+
+    ax.set_ylim(380, 500)
+
+    ax.set_facecolor('#F8F9FA')
+
+    best_borough = boroughs[0]
+    worst_borough = boroughs[-1]
+    gap = math_scores.iloc[0] - math_scores.iloc[-1]
+
+    ax.text(0.2, 0.98, f'Key Insight:\n'
+                        f'• {best_borough} leads in all subjects\n'
+                        f'• {worst_borough} trails by {gap:.0f} points in Math\n'
+                        f'• Math scores consistently highest',
+            transform=ax.transAxes, fontsize=10,
+            verticalalignment='top', bbox=dict(boxstyle='round', 
+            facecolor='wheat', alpha=0.8))
+
+    plt.tight_layout()
+    plt.savefig('borough_comparaison.png', dpi=300, bbox_inches='tight')
+    print("\nEnhanced borough comparison saved as 'borough_comparison.png'")
     plt.show()
 
 if __name__ == "__main__":
