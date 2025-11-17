@@ -248,6 +248,22 @@ def visualize_borough_comparaison():
     print("\nEnhanced borough comparison saved as 'borough_comparison.png'")
     plt.show()
 
+def visualize_score_correlation():
+    score_cols = ['average_math', 'average_reading', 'average_writing']
+    core_matrix = df[score_cols].corr()
+
+    sb.heatmap(
+        core_matrix,
+        annot=True,
+        cmap='coolwarm',
+        linewidths=.5,
+        square=True
+    )
+
+    plt.title("Correlation between SAT Subject Scores")
+    plt.tight_layout()
+    plt.show()
+
 if __name__ == "__main__":
     load_data()
     find_top_schools()
@@ -256,3 +272,4 @@ if __name__ == "__main__":
     best_school_per_borough()
     visualize_top_schools()
     visualize_borough_comparaison()
+    visualize_score_correlation()
