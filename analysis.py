@@ -182,6 +182,29 @@ def visualize_top_schools():
     print("\nVisualization saved as 'top_schools_enhanced.png'")
     plt.show()
 
+def visualize_borough_comparaison():
+    result = analyze_by_borough()
+
+    boroughs = result.index
+    math_scores = result['avg_math']
+    reading_scores = result['avg_reading']
+    writing_scores = result['avg_writing']
+
+    x = np.arange(len(boroughs))
+    width = .25
+
+    plt.figure(figsize=(10, 6))
+
+    plt.bar(x, math_scores, width)
+    plt.bar(x + width, reading_scores, width)
+    plt.bar(x + width*2, writing_scores, width)
+
+    plt.xticks(x + width, boroughs)
+
+    plt.legend(["Math", "Reading", "Writing"])
+
+    plt.savefig('borough_comparaison.png', dpi=300)
+    plt.show()
 
 if __name__ == "__main__":
     load_data()
@@ -190,3 +213,4 @@ if __name__ == "__main__":
     analyze_missing_data()
     best_school_per_borough()
     visualize_top_schools()
+    visualize_borough_comparaison()
