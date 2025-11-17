@@ -14,6 +14,8 @@ geographic patterns, and data quality issues.
 - Python 3.13.7
 - Pandas (data manipulation)
 - NumPy (numerical operations)
+- Matplotlib
+- Seaborn
 
 ## Project Structure
 ```
@@ -43,6 +45,9 @@ python analysis.py
 3. `analyze_by_borough()` - Borough-level aggregation
 4. `analyze_missing_data()` - Data quality assessment
 5. `best_school_per_borough()` - Top school per borough
+6. `visualize_top_schools()`
+7. `visualize_borough_comparaison()`
+8. `visualize_score_correlation()`
 
 ## Skills Demonstrated
 - Data cleaning and validation
@@ -50,6 +55,7 @@ python analysis.py
 - Boolean filtering
 - Statistical analysis
 - Professional data presentation
+- Professional data visualizing
 
 ## Data Source
 [Kaggle: NYC Public School Test Results](https://www.kaggle.com/datasets/beshoyatefadel/exploring-nyc-public-school-test-result-scores)

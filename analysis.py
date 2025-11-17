@@ -250,19 +250,65 @@ def visualize_borough_comparaison():
 
 def visualize_score_correlation():
     score_cols = ['average_math', 'average_reading', 'average_writing']
-    core_matrix = df[score_cols].corr()
+    corr_matrix = df[score_cols].corr()
+
+    fig, ax = plt.subplots(figsize=(10, 8))
 
     sb.heatmap(
-        core_matrix,
-        annot=True,
+        corr_matrix,
+        annot=True,         # Show correlation values
+        fmt=".2f",          # Format for the annotations
         cmap='coolwarm',
-        linewidths=.5,
-        square=True
+        vmin=.9,            # Set minimum value for color scale
+        vmax=1.0,           # Set maximum value for color scale
+        center=.95,         # Center of color scale
+        linewidths=2,
+        square=True,
+        linecolor='white',  # White borders
+        cbar_kws={
+            'shrink': .8,
+            'label': 'Correlation Coefficient',
+        },
+        annot_kws={
+            'size': 14,
+            'weight': 'bold',
+        }
     )
 
-    plt.title("Correlation between SAT Subject Scores")
+    plt.title("Correlation between SAT Subject Scores\nAll NYC Public Schools",
+              fontsize=16, fontweight='bold', pad=20)
+
+    ax.set_xticklabels(['Math', 'Reading', 'Writing'], fontsize=12)
+    ax.set_yticklabels(['Math', 'Reading', 'Writing'], fontsize=12, rotation=0)
+
+    insights_text = (
+        "Key Findings:\n"
+        f"• Reading & Writing: {corr_matrix.loc['average_reading', 'average_writing']:.2f} correlation (strongest)\n"
+        f"• Math & Reading: {corr_matrix.loc['average_math', 'average_reading']:.2f} correlation\n"
+        f"• Math & Writing: {corr_matrix.loc['average_math', 'average_writing']:.2f} correlation\n"
+        "\n"
+        "Interpretation: High correlations across all subjects\n"
+        "suggest school quality is holistic, not subject-specific."
+    )
+
+    plt.text(4, 1.5, insights_text, fontsize=10,
+             bbox=dict(boxstyle='round', facecolor='wheat', alpha=0.8),
+             verticalalignment='top')
+
     plt.tight_layout()
+    plt.savefig('correlation_heatmap_enhanced.png', dpi=300, bbox_inches='tight')
+    print("\nCorrelation heatmap saved as 'correlation_heatmap_enhanced.png'")
     plt.show()
+
+    print("\n" + "="*70)
+    print("CORRELATION ANALYSIS SUMMARY".center(70))
+    print("="*70)
+    print(f"\nStrongest Correlation: Reading ↔ Writing ({corr_matrix.loc['average_reading', 'average_writing']:.3f})")
+    print(f"Weakest Correlation: Math ↔ Reading ({corr_matrix.loc['average_math', 'average_reading']:.3f})")
+    print(f"\nAverage Correlation: {corr_matrix.values[np.triu_indices_from(corr_matrix.values, k=1)].mean():.3f}")
+    print("\nConclusion: All SAT subjects are HIGHLY correlated (>0.90).")
+    print("Schools strong in one subject tend to be strong in all subjects.")
+    print("="*70)
 
 if __name__ == "__main__":
     load_data()
